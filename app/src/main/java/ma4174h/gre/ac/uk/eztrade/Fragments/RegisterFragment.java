@@ -1,5 +1,6 @@
 package ma4174h.gre.ac.uk.eztrade.Fragments;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.viewpager.widget.ViewPager;
 
 
 import ma4174h.gre.ac.uk.eztrade.Responses.RegisterResponse;
@@ -30,6 +33,7 @@ public class RegisterFragment extends Fragment {
     private EditText confirmPasswordEditTxt;
     private EditText firstNameEditTxt;
     private EditText lastNameEditTxt;
+    ViewPager viewPager;
 
 
     @Override
@@ -69,9 +73,9 @@ public class RegisterFragment extends Fragment {
                 //Validating fields
                 if (!validateEmail(emailEditTxt.getText().toString().trim())) {
                     emailEditTxt.setError("Invalid Email");
-                } else if (passwordEditTxt.getText().toString().equals("") || passwordEditTxt.getText().toString().length() < 1) { //change it after testing-------------
+                } else if (passwordEditTxt.getText().toString().length() < 8) {
                     passwordEditTxt.setError("Minimum 8 characters");
-                } else if (firstNameEditTxt.toString().trim().equals("")) {
+                } else if (firstNameEditTxt.getText().toString().trim().equals("")) {
                     firstNameEditTxt.setError("Enter a First Name");
                 } else if (lastNameEditTxt.getText().toString().trim().equals("")) {
                     lastNameEditTxt.setError("Enter a Last Name");
@@ -82,25 +86,8 @@ public class RegisterFragment extends Fragment {
                     confirmPasswordEditTxt.setText("");
                 } else {
 
-
                     Retrofit retrofit = RetrofitBuilder.getRetrofitInstance();
-
                     RetrofitServices retrofitServices = retrofit.create(RetrofitServices.class);
-//                    Call<String> call = retrofitServices.helloUser();
-//
-//                    call.enqueue(new Callback<String>() {
-//                        @Override
-//                        public void onResponse(Call<String> call, Response<String> response) {
-//
-//                            System.out.println(response.body());
-//                        }
-//
-//                        @Override
-//                        public void onFailure(Call<String> call, Throwable t) {
-//                            System.out.println("yooo" + " " + t.getMessage());
-//                            Toast.makeText(getActivity(), "Error response from server, Please Retry.", Toast.LENGTH_LONG).show();
-//                        }
-//                    });
 
                     Call<RegisterResponse> call = retrofitServices.registerUser(firstNameEditTxt.getText().toString().trim(), lastNameEditTxt.getText().toString().trim(),
                             emailEditTxt.getText().toString().trim(), passwordEditTxt.getText().toString().trim());
@@ -112,7 +99,16 @@ public class RegisterFragment extends Fragment {
 
                             if (response.body().getMessage().equals("success")) {
                                 System.out.println(response.code());
-                                Toast.makeText(getActivity(), "Registered Successfully", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), "Registered Successfully!", Toast.LENGTH_LONG).show();
+                                firstNameEditTxt.setText("");
+                                lastNameEditTxt.setText("");
+                                emailEditTxt.setText("");
+                                firstNameEditTxt.setText("");
+                                passwordEditTxt.setText("");
+                                confirmPasswordEditTxt.setText("");
+                                //Go to login fragment
+                                viewPager = (ViewPager) getActivity().findViewById(R.id.viewPager);
+                                viewPager.setCurrentItem(0);
 
                             } else if (response.body().getMessage().equals("failed")) {
                                 System.out.println("error " + response.errorBody() + "   " + response.code());

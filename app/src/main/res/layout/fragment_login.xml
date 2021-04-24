@@ -50,7 +50,7 @@
             android:id="@+id/loginBtn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintVertical_bias=".85"
+            app:layout_constraintVertical_bias=".75"
             app:layout_constraintWidth_percent=".8"
             android:text="Login"
             android:textColor="@color/white"
