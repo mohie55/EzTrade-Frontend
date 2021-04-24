@@ -7,13 +7,16 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
+import retrofit2.http.QueryMap;
 
 public interface RetrofitServices {
 
+
     @FormUrlEncoded
-    @GET("/login")
+    @POST("/login")
     Call<LoginResponse> checkUserCredentials(
-            @Field("username") String username,
+            @Field("email") String email,
             @Field("password") String password);
 
 

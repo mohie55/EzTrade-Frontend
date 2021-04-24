@@ -1,6 +1,5 @@
 package ma4174h.gre.ac.uk.eztrade.Fragments;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +9,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 
@@ -28,8 +26,8 @@ import static ma4174h.gre.ac.uk.eztrade.Fragments.LoginFragment.validateEmail;
 public class RegisterFragment extends Fragment {
 
     private Button registerBtn;
-    private EditText emailEditTxt;
-    private EditText passwordEditTxt;
+    private EditText emailEditTxtRegister;
+    private EditText passwordEditTxtRegister;
     private EditText confirmPasswordEditTxt;
     private EditText firstNameEditTxt;
     private EditText lastNameEditTxt;
@@ -41,8 +39,8 @@ public class RegisterFragment extends Fragment {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_register, container, false);
 
         registerBtn = root.findViewById(R.id.registerBtn);
-        emailEditTxt = root.findViewById(R.id.emailRegEditTxt);
-        passwordEditTxt = root.findViewById(R.id.passwordRegEditTxt);
+        emailEditTxtRegister = root.findViewById(R.id.emailEditTxtRegister);
+        passwordEditTxtRegister = root.findViewById(R.id.passwordEditTxtRegister);
         confirmPasswordEditTxt = root.findViewById(R.id.confirmPasswordEditTxt);
         firstNameEditTxt = root.findViewById(R.id.firstNameEditTxt);
         lastNameEditTxt = root.findViewById(R.id.lastNameEditTxt);
@@ -50,12 +48,12 @@ public class RegisterFragment extends Fragment {
         registerBtn.setTranslationY(300);
         registerBtn.setAlpha(0);
         registerBtn.animate().translationY(0).alpha(100).setDuration(1000).setStartDelay(800).start();
-        emailEditTxt.setTranslationY(300);
-        emailEditTxt.setAlpha(0);
-        emailEditTxt.animate().translationY(0).alpha(100).setDuration(1000).setStartDelay(800).start();
-        passwordEditTxt.setTranslationY(300);
-        passwordEditTxt.setAlpha(0);
-        passwordEditTxt.animate().translationY(0).alpha(100).setDuration(1000).setStartDelay(800).start();
+        emailEditTxtRegister.setTranslationY(300);
+        emailEditTxtRegister.setAlpha(0);
+        emailEditTxtRegister.animate().translationY(0).alpha(100).setDuration(1000).setStartDelay(800).start();
+        passwordEditTxtRegister.setTranslationY(300);
+        passwordEditTxtRegister.setAlpha(0);
+        passwordEditTxtRegister.animate().translationY(0).alpha(100).setDuration(1000).setStartDelay(800).start();
         confirmPasswordEditTxt.setTranslationY(300);
         confirmPasswordEditTxt.setAlpha(0);
         confirmPasswordEditTxt.animate().translationY(0).alpha(100).setDuration(1000).setStartDelay(800).start();
@@ -71,18 +69,18 @@ public class RegisterFragment extends Fragment {
             public void onClick(View v) {
 
                 //Validating fields
-                if (!validateEmail(emailEditTxt.getText().toString().trim())) {
-                    emailEditTxt.setError("Invalid Email");
-                } else if (passwordEditTxt.getText().toString().length() < 8) {
-                    passwordEditTxt.setError("Minimum 8 characters");
+                if (!validateEmail(emailEditTxtRegister.getText().toString().trim())) {
+                    emailEditTxtRegister.setError("Invalid Email");
+                } else if (passwordEditTxtRegister.getText().toString().length() < 8) {
+                    passwordEditTxtRegister.setError("Minimum 8 characters");
                 } else if (firstNameEditTxt.getText().toString().trim().equals("")) {
                     firstNameEditTxt.setError("Enter a First Name");
                 } else if (lastNameEditTxt.getText().toString().trim().equals("")) {
                     lastNameEditTxt.setError("Enter a Last Name");
-                } else if (!confirmPasswordEditTxt.getText().toString().equals(passwordEditTxt.getText().toString())) {
-                    passwordEditTxt.setError("Passwords don't match");
+                } else if (!confirmPasswordEditTxt.getText().toString().equals(passwordEditTxtRegister.getText().toString())) {
+                    passwordEditTxtRegister.setError("Passwords don't match");
                     confirmPasswordEditTxt.setError("Passwords don't match");
-                    passwordEditTxt.setText("");
+                    passwordEditTxtRegister.setText("");
                     confirmPasswordEditTxt.setText("");
                 } else {
 
@@ -90,7 +88,7 @@ public class RegisterFragment extends Fragment {
                     RetrofitServices retrofitServices = retrofit.create(RetrofitServices.class);
 
                     Call<RegisterResponse> call = retrofitServices.registerUser(firstNameEditTxt.getText().toString().trim(), lastNameEditTxt.getText().toString().trim(),
-                            emailEditTxt.getText().toString().trim(), passwordEditTxt.getText().toString().trim());
+                            emailEditTxtRegister.getText().toString().trim(), passwordEditTxtRegister.getText().toString().trim());
 
                     call.enqueue(new Callback<RegisterResponse>() {
                         @Override
@@ -102,9 +100,9 @@ public class RegisterFragment extends Fragment {
                                 Toast.makeText(getActivity(), "Registered Successfully!", Toast.LENGTH_LONG).show();
                                 firstNameEditTxt.setText("");
                                 lastNameEditTxt.setText("");
-                                emailEditTxt.setText("");
+                                emailEditTxtRegister.setText("");
                                 firstNameEditTxt.setText("");
-                                passwordEditTxt.setText("");
+                                passwordEditTxtRegister.setText("");
                                 confirmPasswordEditTxt.setText("");
                                 //Go to login fragment
                                 viewPager = (ViewPager) getActivity().findViewById(R.id.viewPager);

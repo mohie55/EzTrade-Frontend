@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
         <EditText
-            android:id="@+id/emailEditTxt"
+            android:id="@+id/emailEditTxtLogin"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintWidth_percent="0.8"
@@ -25,7 +25,7 @@
              app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/passwordEditTxt"
+        android:id="@+id/passwordEditTxtLogin"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintWidth_percent="0.8"
@@ -41,7 +41,7 @@
         android:inputType="textEmailAddress"
         android:selectAllOnFocus="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/emailEditTxt"
+        app:layout_constraintTop_toBottomOf="@id/emailEditTxtLogin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
        />
@@ -73,8 +73,8 @@
         android:layout_marginTop="10dp"
         android:layout_marginRight="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/passwordEditTxt"
+        app:layout_constraintEnd_toEndOf="@id/passwordEditTxtLogin"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/passwordEditTxt"/>
+        app:layout_constraintTop_toBottomOf="@id/passwordEditTxtLogin"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
