@@ -7,6 +7,14 @@ public class LoginResponse {
     private String message;
     private User user;
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     public String getMessage() {
         return message;
     }

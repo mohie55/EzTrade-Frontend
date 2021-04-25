@@ -25,7 +25,7 @@ import retrofit2.Retrofit;
 
 /**
  * A simple {@link Fragment} subclass.
-// * Use the {@link LoginFragment#newInstance} factory method to
+/
  * create an instance of this fragment.
  */
 public class LoginFragment extends Fragment {
@@ -119,11 +119,12 @@ public class LoginFragment extends Fragment {
                         public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
 //                            LoginResponse message = response.body();
 
-                            if (response.message().equals("success")) {
+                            if (response.body().getMessage().equalsIgnoreCase("success")) {
                                 Toast.makeText(getActivity(), "Logged in Successfully", Toast.LENGTH_SHORT).show();
+
                                 //move to home page
 
-                            } else if (response.message().equals("failed")) {
+                            } else if (response.body().getMessage().equalsIgnoreCase("failed")) {
                                 Toast.makeText(getActivity(), "Email and Password don't match", Toast.LENGTH_LONG).show();
                             }
                         }
