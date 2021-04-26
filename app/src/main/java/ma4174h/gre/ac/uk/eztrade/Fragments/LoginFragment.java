@@ -16,8 +16,8 @@ import org.apache.commons.validator.routines.EmailValidator;
 
 import ma4174h.gre.ac.uk.eztrade.R;
 import ma4174h.gre.ac.uk.eztrade.Responses.LoginResponse;
-import ma4174h.gre.ac.uk.eztrade.RetrofitBuilder;
-import ma4174h.gre.ac.uk.eztrade.RetrofitServices;
+import ma4174h.gre.ac.uk.eztrade.Retrofit.RetrofitBuilder;
+import ma4174h.gre.ac.uk.eztrade.Retrofit.RetrofitServices;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

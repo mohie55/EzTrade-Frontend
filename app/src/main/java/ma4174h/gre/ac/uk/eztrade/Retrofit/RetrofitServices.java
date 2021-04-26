@@ -1,4 +1,4 @@
-package ma4174h.gre.ac.uk.eztrade;
+package ma4174h.gre.ac.uk.eztrade.Retrofit;
 
 import ma4174h.gre.ac.uk.eztrade.Responses.LoginResponse;
 import ma4174h.gre.ac.uk.eztrade.Responses.RegisterResponse;

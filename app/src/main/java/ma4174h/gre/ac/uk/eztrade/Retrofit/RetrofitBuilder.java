@@ -1,4 +1,4 @@
-package ma4174h.gre.ac.uk.eztrade;
+package ma4174h.gre.ac.uk.eztrade.Retrofit;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

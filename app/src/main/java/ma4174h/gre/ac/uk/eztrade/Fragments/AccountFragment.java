@@ -1,4 +1,4 @@
-package ma4174h.gre.ac.uk.eztrade;
+package ma4174h.gre.ac.uk.eztrade.Fragments;
 
 import android.os.Bundle;
 
@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import ma4174h.gre.ac.uk.eztrade.R;
 
 /**
  * A simple {@link Fragment} subclass.

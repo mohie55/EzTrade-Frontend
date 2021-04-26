@@ -14,8 +14,8 @@ import androidx.viewpager.widget.ViewPager;
 
 import ma4174h.gre.ac.uk.eztrade.Responses.RegisterResponse;
 import ma4174h.gre.ac.uk.eztrade.R;
-import ma4174h.gre.ac.uk.eztrade.RetrofitBuilder;
-import ma4174h.gre.ac.uk.eztrade.RetrofitServices;
+import ma4174h.gre.ac.uk.eztrade.Retrofit.RetrofitBuilder;
+import ma4174h.gre.ac.uk.eztrade.Retrofit.RetrofitServices;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
