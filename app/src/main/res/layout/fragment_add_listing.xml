@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.core.widget.NestedScrollView xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Fragments.AddListingFragment">
+
+
+
+
+    <HorizontalScrollView
+        android:id="@+id/imagesLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/image_view1"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_marginRight="10dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/add_image_icon"></ImageView>
+
+            <ImageView
+                android:id="@+id/image_view2"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_marginRight="10dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/add_image_icon"></ImageView>
+
+            <ImageView
+                android:id="@+id/image_view3"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_marginRight="10dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/add_image_icon"></ImageView>
+
+            <ImageView
+                android:id="@+id/image_view4"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_marginRight="10dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/add_image_icon"></ImageView>
+
+            <ImageView
+                android:id="@+id/image_view5"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_marginRight="10dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/add_image_icon"></ImageView>
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
+
+
+        <EditText
+            android:id="@+id/titleEditTxt"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:autofillHints="Title"
+            android:background="@drawable/edittext_custom"
+            android:hint="Title"
+            android:paddingLeft="20dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:selectAllOnFocus="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imagesLayout"
+            app:layout_constraintWidth_percent="0.8" />
+
+
+        <EditText
+            android:id="@+id/descriptionEditTxt"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:autofillHints="Description"
+            android:background="@drawable/edittext_custom"
+            android:hint="Describe the item"
+            android:maxLines="10"
+            android:minLines="3"
+            android:paddingLeft="20dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:selectAllOnFocus="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/titleEditTxt"
+            app:layout_constraintWidth_percent="0.8" />
+
+        <Button
+            android:id="@+id/categoryButton"
+            android:layout_width="170dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:background="@drawable/button_custom"
+            android:text="Choose category"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.17"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/descriptionEditTxt"
+            app:layout_constraintWidth_percent=".8" />
+
+        <EditText
+            android:id="@+id/priceEditTxt"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:autofillHints="First Name"
+            android:background="@drawable/edittext_custom"
+            android:hint="Price"
+            android:inputType="numberDecimal"
+            android:paddingLeft="20dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:selectAllOnFocus="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/categoryButton"
+            app:layout_constraintWidth_percent="0.8" />
+
+    <Button
+        android:id="@+id/submitButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginBottom="60dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/button_custom"
+        android:text="Submit"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/priceEditTxt"
+        app:layout_constraintWidth_percent=".8" />
+
+    <TextView
+        android:id="@+id/categoryTextView"
+        android:layout_width="130dp"
+        android:textAlignment="center"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/custom_text_view"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.882"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/descriptionEditTxt" />
+
+<!--    <ProgressBar-->
+<!--        android:id="@+id/progressBar"-->
+<!--        style="@style/Widget.AppCompat.ProgressBar.Horizontal"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_centerInParent="true"-->
+<!--        android:indeterminate="true"-->
+<!--        android:indeterminateDrawable="@drawable/progress_bar_custom"-->
+<!--        android:progress="0"-->
+<!--        android:layout_marginBottom="16dp"-->
+<!--        tools:ignore="MissingConstraints" />-->
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.core.widget.NestedScrollView>
+
+
+

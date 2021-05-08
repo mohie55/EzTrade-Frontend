@@ -1,8 +1,11 @@
 package ma4174h.gre.ac.uk.eztrade.Fragments;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +15,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import org.apache.commons.validator.routines.EmailValidator;
 
+import ma4174h.gre.ac.uk.eztrade.Activities.LoginActivity;
+import ma4174h.gre.ac.uk.eztrade.Activities.MainActivity;
+import ma4174h.gre.ac.uk.eztrade.Models.User;
 import ma4174h.gre.ac.uk.eztrade.R;
 import ma4174h.gre.ac.uk.eztrade.Responses.LoginResponse;
 import ma4174h.gre.ac.uk.eztrade.Retrofit.RetrofitBuilder;
@@ -22,6 +30,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,6 +49,7 @@ public class LoginFragment extends Fragment {
     private EditText emailEditTxtLogin;
     private EditText passwordEditTxtLogin;
     private TextView forgotPass;
+    public static final String SHARED_PREFERENCES = "SharedPreferences";
 
 //    // TODO: Rename and change types of parameters
 //    private String mParam1;
@@ -121,8 +132,7 @@ public class LoginFragment extends Fragment {
 
                             if (response.body().getMessage().equalsIgnoreCase("success")) {
                                 Toast.makeText(getActivity(), "Logged in Successfully", Toast.LENGTH_SHORT).show();
-
-                                //move to home page
+                                openHomePage(response.body().getUser());
 
                             } else if (response.body().getMessage().equalsIgnoreCase("failed")) {
                                 Toast.makeText(getActivity(), "Email and Password don't match", Toast.LENGTH_LONG).show();
@@ -132,7 +142,7 @@ public class LoginFragment extends Fragment {
                         @Override
                         public void onFailure(Call<LoginResponse> call, Throwable t) {
                             t.printStackTrace();
-                            Toast.makeText(getActivity(), "Error couldn't connect to server, Please Retry lol.", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getActivity(), "Error couldn't connect to server, Please Retry.", Toast.LENGTH_LONG).show();
 
                         }
                     });
@@ -143,6 +153,23 @@ public class LoginFragment extends Fragment {
         });
         return root;
     }
+
+    public void openHomePage(User user) {
+        // save user in shared preferences (locally)
+
+        User loggedUser = user;
+        SharedPreferences sharedPref = getActivity().getSharedPreferences(SHARED_PREFERENCES,MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = sharedPref.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(user);
+        prefsEditor.putString("user", json);
+        prefsEditor.commit();
+        Intent intent = new Intent(getActivity(),MainActivity.class);
+        getActivity().startActivity(intent);
+
+    }
+
+
 
     public static boolean validateEmail(String email) {
         // create the EmailValidator instance

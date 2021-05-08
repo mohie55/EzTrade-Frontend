@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "951600157815",
+    "project_id": "eztrade-50838",
+    "storage_bucket": "eztrade-50838.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:951600157815:android:da70cbe711bacb2a912272",
+        "android_client_info": {
+          "package_name": "ma4174h.gre.ac.uk.eztrade"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "951600157815-pgg7gpr19mksjmb8ie2jb1qu6klhn4e1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDuxWDGx3k3fFRnLmGXJc1VEc5VqyFDmBU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "951600157815-pgg7gpr19mksjmb8ie2jb1qu6klhn4e1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

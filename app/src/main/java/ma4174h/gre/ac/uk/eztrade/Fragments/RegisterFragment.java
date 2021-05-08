@@ -31,7 +31,8 @@ public class RegisterFragment extends Fragment {
     private EditText confirmPasswordEditTxt;
     private EditText firstNameEditTxt;
     private EditText lastNameEditTxt;
-    ViewPager viewPager;
+    private EditText phoneNumberEditTxtRegister;
+    private ViewPager viewPager;
 
 
     @Override
@@ -44,6 +45,7 @@ public class RegisterFragment extends Fragment {
         confirmPasswordEditTxt = root.findViewById(R.id.confirmPasswordEditTxt);
         firstNameEditTxt = root.findViewById(R.id.firstNameEditTxt);
         lastNameEditTxt = root.findViewById(R.id.lastNameEditTxt);
+        phoneNumberEditTxtRegister = root.findViewById(R.id.phoneNumberEditTxtRegister);
 
         registerBtn.setTranslationY(300);
         registerBtn.setAlpha(0);

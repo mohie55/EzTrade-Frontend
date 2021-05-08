@@ -105,6 +105,25 @@
         app:layout_constraintVertical_bias="0.0"
         app:layout_constraintWidth_percent="0.8" />
 
+    <EditText
+        android:id="@+id/phoneNumberEditTxtRegister"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:autofillHints="Confirm Password"
+        android:background="@drawable/edittext_custom"
+        android:hint="Phone Number"
+        android:paddingLeft="20dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:selectAllOnFocus="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/confirmPasswordEditTxt"
+        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintWidth_percent="0.8" />
+
     <Button
         android:id="@+id/registerBtn"
         android:layout_width="0dp"
