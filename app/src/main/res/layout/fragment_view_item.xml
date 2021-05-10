@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.core.widget.NestedScrollView xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".Fragments.viewItemFragment">
+<!--        android:padding="50dp">-->
+
+        <com.denzcoskun.imageslider.ImageSlider
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:id="@+id/itemImageSlider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:auto_cycle="false"
+            app:delay="0"
+            app:iss_corner_radius="5"/>
+
+        <TextView
+            android:id="@+id/itemTitleTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/itemPriceTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textColor="@color/custom_green"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/itemDescriptionTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/itemTitleTV" />
+
+        <TextView
+            android:id="@+id/sellerFirstNameTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/itemDescriptionTV" />
+
+        <TextView
+            android:id="@+id/sellerEmailTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sellerFirstNameTV" />
+
+<!--        <TextView-->
+<!--            android:id="@+id/sellerReviewsTV"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="20dp"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/sellerEmailTV" />-->
+
+
+
+
+
+
+
+
+<!--        <HorizontalScrollView-->
+<!--            android:id="@+id/imagesLayout"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_alignParentStart="true"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:layout_alignParentTop="true"-->
+<!--            app:layout_constraintTop_toTopOf="parent">-->
+
+<!--        <LinearLayout-->
+
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="horizontal"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="@+id/imagesLayout">-->
+
+<!--            <ImageView-->
+<!--                android:id="@+id/image_view1"-->
+<!--                android:layout_width="130dp"-->
+<!--                android:layout_height="140dp"-->
+<!--                android:layout_marginRight="10dp"-->
+<!--                android:scaleType="centerCrop"></ImageView>-->
+
+<!--            <ImageView-->
+<!--                android:id="@+id/image_view2"-->
+<!--                android:layout_width="130dp"-->
+<!--                android:layout_height="140dp"-->
+<!--                android:layout_marginRight="10dp"-->
+<!--                android:scaleType="centerCrop"></ImageView>-->
+
+<!--            <ImageView-->
+<!--                android:id="@+id/image_view3"-->
+<!--                android:layout_width="130dp"-->
+<!--                android:layout_height="140dp"-->
+<!--                android:layout_marginRight="10dp"-->
+<!--                android:scaleType="centerCrop"></ImageView>-->
+
+<!--            <ImageView-->
+<!--                android:id="@+id/image_view4"-->
+<!--                android:layout_width="130dp"-->
+<!--                android:layout_height="140dp"-->
+<!--                android:layout_marginRight="10dp"-->
+<!--                android:scaleType="centerCrop"></ImageView>-->
+
+<!--            <ImageView-->
+<!--                android:id="@+id/image_view5"-->
+<!--                android:layout_width="130dp"-->
+<!--                android:layout_height="140dp"-->
+<!--                android:layout_marginRight="10dp"-->
+<!--                android:scaleType="centerCrop"></ImageView>-->
+
+<!--        </LinearLayout>-->
+
+<!--        </HorizontalScrollView>-->
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.core.widget.NestedScrollView>

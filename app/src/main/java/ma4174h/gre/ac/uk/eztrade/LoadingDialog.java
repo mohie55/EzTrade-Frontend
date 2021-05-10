@@ -5,24 +5,22 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 
-import java.util.concurrent.CopyOnWriteArrayList;
-
 public class LoadingDialog {
 
     private Activity activity;
-    private Context context;
+    //    private Context context;
     private AlertDialog dialog;
 
-    public LoadingDialog(Context context,Activity activity) {
-        this.context = context;
+    public LoadingDialog(Context context, Activity activity) {
+//        this.context = context;
         this.activity = activity;
     }
 
     public void startProgressDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
         LayoutInflater inflater = activity.getLayoutInflater();
-        builder.setView(inflater.inflate(R.layout.loading_dialog,null));
+        builder.setView(inflater.inflate(R.layout.loading_dialog, null));
         builder.setCancelable(false);
 
         dialog = builder.create();

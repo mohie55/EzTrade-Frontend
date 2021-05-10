@@ -1,40 +1,52 @@
 package ma4174h.gre.ac.uk.eztrade.Fragments;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.widget.SearchView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.Circle;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.List;
+
+import ma4174h.gre.ac.uk.eztrade.DTO.ItemLocationsDTO;
 import ma4174h.gre.ac.uk.eztrade.R;
+import ma4174h.gre.ac.uk.eztrade.Responses.ItemLocationsResponse;
+import ma4174h.gre.ac.uk.eztrade.Responses.ItemResponse;
+import ma4174h.gre.ac.uk.eztrade.Retrofit.RetrofitBuilder;
+import ma4174h.gre.ac.uk.eztrade.Retrofit.RetrofitServices;
 import pub.devrel.easypermissions.EasyPermissions;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class MapFragment extends Fragment {
 
 //    public static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
 //    private MapView mapView;
 
-    GoogleMap googleMap1;
+    GoogleMap googleMap;
     LatLng latLng;
+    MarkerOptions markerOptions;
+    String searchQuery;
+
+    Retrofit retrofit;
+    RetrofitServices retrofitServices;
+    SearchView searchItemsBar;
 
     @Nullable
     @Override
@@ -56,16 +68,20 @@ public class MapFragment extends Fragment {
                 String permission1 = Manifest.permission.ACCESS_FINE_LOCATION;
                 String permission2 = Manifest.permission.ACCESS_COARSE_LOCATION;
                 if (EasyPermissions.hasPermissions(getActivity(), permission1, permission2)) {
-                        googleMap1 = googleMap;
-                        Bundle args = getArguments();
-                    if(args != null) {
+                    MapFragment.this.googleMap = googleMap;
+
+                    Bundle args = getArguments();
+                    if (args != null) {
                         showAddedItemOnMap();
-                    };
+                    } else {
+                        //Loads all markers for saved items
+                        getAllItems();
+                    }
+
                     googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                         @Override
                         public void onMapClick(LatLng latLng) {
                             // you could the user's location or town
-
 
 
 //                            MarkerOptions markerOptions = new MarkerOptions();
@@ -89,21 +105,176 @@ public class MapFragment extends Fragment {
         return view;
     }
 
-    private void showAddedItemOnMap() {
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        latLng = getArguments().getParcelable("latlng");
-        //point map view to the recently added item
-        googleMap1.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+        searchItemsBar = (SearchView) getView().findViewById(R.id.searchItemsBar);
+        searchItemsBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchQuery = searchItemsBar.getQuery().toString();
 
-//        MarkerOptions markerOptions = new MarkerOptions();
-//        markerOptions.position(latLng);
-//        markerOptions.title("latLng.latitude + " : " + latLng.longitude");
-//        googleMap1.clear();
-//        googleMap1.addMarker(markerOptions);
+                if (!searchQuery.isEmpty()) {
+                    getItems(searchQuery);
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
+//        if (mapFragment != null) {
+//            mapFragment.getMapAsync(callback);
+//        }
     }
 
+    private void getItems(String searchQuery) {
+
+        retrofit = RetrofitBuilder.getRetrofitInstance();
+        retrofitServices = retrofit.create(RetrofitServices.class);
+
+        Call<ItemLocationsResponse> call = retrofitServices.getItemLocations(searchQuery);
+
+        call.enqueue(new Callback<ItemLocationsResponse>() {
+            @Override
+            public void onResponse(Call<ItemLocationsResponse> call, Response<ItemLocationsResponse> response) {
+
+                if (response.body().getMessage().equalsIgnoreCase("success")) {
+
+                    List<ItemLocationsDTO> itemLocationsDTOList = response.body().getItemLocationsDTOList();
+                    loadItemsOnMap(itemLocationsDTOList);
+
+                } else if (response.body().getMessage().equalsIgnoreCase("failed")) {
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ItemLocationsResponse> call, Throwable t) {
+                t.printStackTrace();
+                Toast.makeText(getActivity(), "Error couldn't connect to server, Please Retry.", Toast.LENGTH_LONG).show();
+
+            }
+        });
+    }
+
+    private void loadItemsOnMap(List<ItemLocationsDTO> itemLocationsDTOList) {
+
+        googleMap.clear();
+
+        for (ItemLocationsDTO item : itemLocationsDTOList) {
+            markerOptions = new MarkerOptions();
+            latLng = new LatLng(item.getLatitude(), item.getLongitude());
+            markerOptions.position(latLng);
+            markerOptions.title(item.getTitle() + "            £" + item.getPrice().toString());
+            googleMap.addMarker(markerOptions);
+            googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                @Override
+                public void onInfoWindowClick(Marker marker) {
+                    showItemDetails(item.getItemId());
+                }
+            });
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+        }
+
+    }
+
+    private void showItemDetails(int itemId) {
+
+            Bundle mapArgs = new Bundle();
+            mapArgs.putString("searchQuery", searchQuery);
+            mapArgs.putInt("itemId", itemId);
+            ViewItemFragment viewItemFragment = new ViewItemFragment();
+            viewItemFragment.setArguments(mapArgs);
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container_main, viewItemFragment).commit();
+
+    }
+
+    private void showAddedItemOnMap() {
+
+        googleMap.clear();
+        int itemId = 0;
+        if (getArguments() != null) {
+            latLng = getArguments().getParcelable("latlng");
+            itemId = getArguments().getInt("itemId");
+        }
 
 
+        retrofit = RetrofitBuilder.getRetrofitInstance();
+        retrofitServices = retrofit.create(RetrofitServices.class);
+        MarkerOptions markerOptions = new MarkerOptions();
+
+        if (itemId != 0) {
+            Call<ItemResponse> call = retrofitServices.getItem(itemId);
+
+            call.enqueue(new Callback<ItemResponse>() {
+                @Override
+                public void onResponse(Call<ItemResponse> call, Response<ItemResponse> response) {
+
+                    if (response.body() != null) {
+                        if (response.body().getMessage().equalsIgnoreCase("success")) {
+                            Double price = response.body().getItem().getPrice();
+                            String title = response.body().getItem().getTitle();
+
+                            markerOptions.title(title + "              £" + price.toString());
+                            markerOptions.position(latLng);
+                            googleMap.addMarker(markerOptions);
+                        } else if (response.body().getMessage().equalsIgnoreCase("failed")) {
+
+
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ItemResponse> call, Throwable t) {
+                    t.printStackTrace();
+                    Toast.makeText(getActivity(), "Error, couldn't connect to server, Please Retry.", Toast.LENGTH_LONG).show();
+
+                }
+            });
+        }
+
+        //point map view to the recently added item
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14));
+        markerOptions.position(latLng);
+        googleMap.addMarker(markerOptions);
+    }
+
+    private void getAllItems() {
+
+        retrofit = RetrofitBuilder.getRetrofitInstance();
+        retrofitServices = retrofit.create(RetrofitServices.class);
+
+        Call<ItemLocationsResponse> call = retrofitServices.getAllItemLocations();
+
+        call.enqueue(new Callback<ItemLocationsResponse>() {
+            @Override
+            public void onResponse(Call<ItemLocationsResponse> call, Response<ItemLocationsResponse> response) {
+
+                if (response.body().getMessage().equalsIgnoreCase("success")) {
+
+                    List<ItemLocationsDTO> itemLocationsDTOList = response.body().getItemLocationsDTOList();
+                    loadItemsOnMap(itemLocationsDTOList);
+
+                } else if (response.body().getMessage().equalsIgnoreCase("failed")) {
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ItemLocationsResponse> call, Throwable t) {
+                t.printStackTrace();
+                Toast.makeText(getActivity(), "Error couldn't connect to server, Please Retry.", Toast.LENGTH_LONG).show();
+
+            }
+        });
+    }
 
 //    private void initGoogleMaps(Bundle savedInstanceState){
 //        // *** IMPORTANT ***
@@ -118,14 +289,7 @@ public class MapFragment extends Fragment {
 //        mapView.getMapAsync(this);
 //    }
 
-//    @Override
-//    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-//        super.onViewCreated(view, savedInstanceState);
-//
-//        if (mapFragment != null) {
-//            mapFragment.getMapAsync(callback);
-//        }
-//    }
+
 
 //    @Override
 //    public void onSaveInstanceState(Bundle outState) {
@@ -195,4 +359,6 @@ public class MapFragment extends Fragment {
 //        }
 //        map.setMyLocationEnabled(true);
 //    }
+
+
 }

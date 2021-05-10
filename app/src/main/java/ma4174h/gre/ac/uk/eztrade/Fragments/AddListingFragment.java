@@ -32,8 +32,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
@@ -48,8 +46,9 @@ import java.util.List;
 
 import ma4174h.gre.ac.uk.eztrade.LoadingDialog;
 import ma4174h.gre.ac.uk.eztrade.Models.Item;
-import ma4174h.gre.ac.uk.eztrade.Models.ItemImageUpload;
+import ma4174h.gre.ac.uk.eztrade.Models.ItemImage;
 import ma4174h.gre.ac.uk.eztrade.R;
+import ma4174h.gre.ac.uk.eztrade.Responses.ItemImageResponse;
 import ma4174h.gre.ac.uk.eztrade.Responses.ItemResponse;
 import ma4174h.gre.ac.uk.eztrade.Retrofit.RetrofitBuilder;
 import ma4174h.gre.ac.uk.eztrade.Retrofit.RetrofitServices;
@@ -65,26 +64,21 @@ public class AddListingFragment extends Fragment {
 
     private static final int REQUEST_CODE_CHOOSE = 1;
 //    private static final int RESULT_OK = ;
-
-
+    Retrofit retrofit;
+    RetrofitServices retrofitServices;
     private ImageView imageView1;
     private ImageView imageView2;
     private ImageView imageView3;
     private ImageView imageView4;
     private ImageView imageView5;
-
     private Button categoryButton;
     private Button submitButton;
-
     private EditText descriptionEditTxt;
     private EditText titleEditTxt;
     private EditText priceEditTxt;
-
     private TextView categoryTextView;
-
     private LoadingDialog loadingDialog;
     private FusedLocationProviderClient fusedLocationClient;
-
     private Integer userId;
     private String category;
     private String description;
@@ -100,10 +94,10 @@ public class AddListingFragment extends Fragment {
     private List<ImageView> imageViews;
 
     private Boolean itemSaved;
-    private Boolean uploadSuccess;
     private StorageReference storageReference;
-    private DatabaseReference databaseReference;
     private StorageTask uploadTask;
+    private ArrayList<String> imageDownloadUrls;
+    private int itemId;
 
     @Nullable
     @Override
@@ -146,6 +140,7 @@ public class AddListingFragment extends Fragment {
 
         imageViews = new ArrayList<>();
         selectedPhotos = new HashMap<>();
+        loadingDialog = new LoadingDialog(getContext(), getActivity());
 
         imageViews.add(imageView1);
         imageViews.add(imageView2);
@@ -159,6 +154,7 @@ public class AddListingFragment extends Fragment {
         priceEditTxt = (EditText) getView().findViewById(R.id.priceEditTxt);
         descriptionEditTxt = (EditText) getView().findViewById(R.id.descriptionEditTxt);
         titleEditTxt = (EditText) getView().findViewById(R.id.titleEditTxt);
+
 
 
         Bundle args = getArguments();
@@ -267,41 +263,39 @@ public class AddListingFragment extends Fragment {
                     String permission2 = Manifest.permission.ACCESS_COARSE_LOCATION;
                     if (EasyPermissions.hasPermissions(getActivity(), permission1, permission2)) {
 
-                        if (uploadTask != null && uploadTask.isInProgress()) {
-                            Toast.makeText(getActivity(), "Listing Upload in progress", Toast.LENGTH_SHORT);
-                        } else {
-                            //get the device location
-                            fusedLocationClient.getLastLocation()
-                                    .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
-                                        @Override
-                                        public void onSuccess(Location location) {
+                        //get the device location
+                        fusedLocationClient.getLastLocation()
+                                .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
+                                    @Override
+                                    public void onSuccess(Location location) {
 
-                                            if (location != null) {
-                                                //get the coordinates of the device's location
-                                                latitude = location.getLatitude();
-                                                longitude = location.getLongitude();
-                                                latLng = new LatLng(latitude, longitude);
-                                                //Set item variables
-                                                //set strings to use when saving the item
-                                                title = titleEditTxt.getText().toString().trim();
-                                                price = Double.parseDouble(priceEditTxt.getText().toString().trim());
-                                                description = descriptionEditTxt.getText().toString().trim();
+                                        if (location != null) {
+                                            //get the coordinates of the device's location
+                                            latitude = location.getLatitude();
+                                            longitude = location.getLongitude();
+                                            latLng = new LatLng(latitude, longitude);
+                                            //Set item variables
+                                            //set strings to use when saving the item
+                                            title = titleEditTxt.getText().toString().trim();
+                                            price = Double.parseDouble(priceEditTxt.getText().toString().trim());
+                                            description = descriptionEditTxt.getText().toString().trim();
 
-                                                //Get the logged in user
+                                            //Get the logged in user
 //                                            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("user", Context.MODE_PRIVATE);
 //                                            Gson gson = new Gson();
 //                                            String json = sharedPreferences.getString("user", "");
 //                                            User user = gson.fromJson(json, User.class);
 //                                            userId = user.getId();
 
-                                                if (saveItem(title, description, price, latitude, longitude, 1)) {
+                                            // save the item/listing
+                                            Item item = new Item(title, description, category, price, latitude, longitude, 1);
+                                            saveItem(item);
+                                            submitButton.setEnabled(true);
 
-                                                    openHomePage();
-                                                }
-                                            }
                                         }
-                                    });
-                        }
+                                    }
+                                });
+
                     } else {
                         // Request permission
                         getLocationPermission();
@@ -327,7 +321,7 @@ public class AddListingFragment extends Fragment {
 
     private boolean checkFields() {
 
-        if (category == null) {
+        if (category == null || category.isEmpty()) {
             categoryTextView.setError("Please choose a category.");
             return false;
         } else if (descriptionEditTxt.getText().toString().trim().length() < 1) {
@@ -335,6 +329,7 @@ public class AddListingFragment extends Fragment {
             return false;
 
 //        } else if (priceEditTxt.getText().toString().trim().isEmpty() || Double.parseDouble(priceEditTxt.getText().toString().trim()) < 0.01) {
+//            //ask if they are sure they want to sell for free
 //            priceEditTxt.setError("Please enter a price.");
 //            return false;
 
@@ -351,18 +346,15 @@ public class AddListingFragment extends Fragment {
     }
 
 
-    private boolean saveItem(String title, String description, Double price, Double latitude, Double longitude, Integer userId) {
+    private void saveItem(Item item) {
 
         //Start loading animation
-        loadingDialog = new LoadingDialog(getContext(), getActivity());
+        submitButton.setEnabled(false);
         loadingDialog.startProgressDialog();
 
-        itemSaved = false;
         //save item and upload to server
-        Item item = new Item(title, description, category, price, latitude, longitude, userId);
-
-        Retrofit retrofit = RetrofitBuilder.getRetrofitInstance();
-        RetrofitServices retrofitServices = retrofit.create(RetrofitServices.class);
+        retrofit = RetrofitBuilder.getRetrofitInstance();
+        retrofitServices = retrofit.create(RetrofitServices.class);
 
         Call<ItemResponse> call = retrofitServices.saveItem(item);
 
@@ -372,14 +364,14 @@ public class AddListingFragment extends Fragment {
 
                 if (response.body() != null) {
                     if (response.body().getMessage().equalsIgnoreCase("success")) {
-                        Toast.makeText(getActivity(), "Item Listed Successfully", Toast.LENGTH_SHORT).show();
-                        itemSaved = true;
-                        uploadImages(response.body().getItem().getId());
+                        itemId = response.body().getItem().getId();
+                        // upload images to firebase
+                        uploadImagesToFB();
 
 
                     } else if (response.body().getMessage().equalsIgnoreCase("failed")) {
                         Toast.makeText(getActivity(), "Listing item failed", Toast.LENGTH_LONG).show();
-                        itemSaved = false;
+
 
                     }
                 }
@@ -389,12 +381,13 @@ public class AddListingFragment extends Fragment {
             public void onFailure(Call<ItemResponse> call, Throwable t) {
                 t.printStackTrace();
                 Toast.makeText(getActivity(), "Error couldn't connect to server, Please Retry.", Toast.LENGTH_LONG).show();
-                itemSaved = false;
+                t.printStackTrace();
+
             }
         });
 
-        loadingDialog.dismissDialog();
-        return itemSaved;
+//        loadingDialog.dismissDialog();
+
     }
 
     //    @AfterPermissionGranted(1)
@@ -452,49 +445,44 @@ public class AddListingFragment extends Fragment {
 
         } else if (resultCode == ImagePicker.RESULT_ERROR) {
             Toast.makeText(getContext(), ImagePicker.Companion.getError(data), Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(getContext(), "Task Cancelled", Toast.LENGTH_SHORT).show();
         }
 
     }
 
-    private Boolean uploadImages(Integer itemId) {
+    private void uploadImagesToFB() {
 
-        uploadSuccess = false;
         storageReference = FirebaseStorage.getInstance().getReference().child("Images");
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        databaseReference = database.getInstance().getReference("test");
-
+//        FirebaseDatabase database = FirebaseDatabase.getInstance();
+//        databaseReference = database.getInstance().getReference("test");
+        imageDownloadUrls = new ArrayList<>();
 
         for (HashMap.Entry<Integer, Uri> entry : selectedPhotos.entrySet()) {
 
-            final StorageReference imageupload = storageReference.child(System.currentTimeMillis() + "." + getFileExtension(entry.getValue()));
+            final StorageReference imageUpload = storageReference.child(System.currentTimeMillis() + "." + entry.getValue().getLastPathSegment());
 
-            uploadTask = imageupload.putFile(entry.getValue()).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            uploadTask = imageUpload.putFile(entry.getValue()).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    imageupload.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    imageUpload.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            String downloadUrl = String.valueOf(uri);
-                            System.out.println(downloadUrl);
-//                            SendLink(downloadUrl,entry.getValue().getPath());
+
+//                            imageUpload.getDownloadUrl().toString()
+//                            imageDownloadUrls.add(imageUpload.getDownloadUrl().toString());
                         }
                     }).addOnCompleteListener(new OnCompleteListener<Uri>() {
                         @Override
                         public void onComplete(@NonNull Task<Uri> task) {
                             if (task.isSuccessful()) {
                                 Uri downloadUri = task.getResult();
-                                Log.e(TAG, "then: " + downloadUri.toString());
+                                imageDownloadUrls.add(downloadUri.toString());
+                                if (imageDownloadUrls != null && imageDownloadUrls.size() == selectedPhotos.size() && itemId != 0) {
+                                    saveItemImagesInDB(itemId);
+                                }
 
-                                ItemImageUpload upload = new ItemImageUpload(entry.getValue().getPath(),
-                                        downloadUri.toString());
+//                                Log.e(TAG, "then: " + downloadUri.toString() + "list size" + imageDownloadUrls.size());
 
-//                                String uploadId = databaseReference.push().getKey();
-//                                databaseReference.child(uploadId).setValue(upload);
-//
-                                databaseReference.setValue("test 222");
-                                uploadSuccess = true;
+
                             } else {
                                 Toast.makeText(getActivity(), "upload failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                             }
@@ -509,10 +497,50 @@ public class AddListingFragment extends Fragment {
                 }
             });
 
-
         }
 
-        return uploadSuccess;
+
+
+    }
+
+    private void saveItemImagesInDB(int itemId) {
+
+        //Save image download url to the database along with the item id as a reference
+        for (String url : imageDownloadUrls) {
+
+            ItemImage itemImage = new ItemImage(itemId, url);
+
+            retrofit = RetrofitBuilder.getRetrofitInstance();
+            retrofitServices = retrofit.create(RetrofitServices.class);
+
+            Call<ItemImageResponse> call = retrofitServices.saveItemImage(itemImage);
+
+            call.enqueue(new Callback<ItemImageResponse>() {
+                @Override
+                public void onResponse(Call<ItemImageResponse> call, Response<ItemImageResponse> response) {
+
+                    if (response.body() != null) {
+                        if (response.body().getMessage().equalsIgnoreCase("success")) {
+                            Toast.makeText(getActivity(), "Item Listed Successfully", Toast.LENGTH_SHORT).show();
+                            loadingDialog.dismissDialog();
+                            openHomePage(itemId);
+
+                        } else if (response.body().getMessage().equalsIgnoreCase("failed")) {
+                            Toast.makeText(getActivity(), "Listing item failed", Toast.LENGTH_LONG).show();
+
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ItemImageResponse> call, Throwable t) {
+                    t.printStackTrace();
+                    Toast.makeText(getActivity(), "Error, couldn't connect to server, Please Retry.", Toast.LENGTH_LONG).show();
+
+                }
+            });
+        }
+
     }
 
     private String getFileExtension(Uri uri) {
@@ -525,10 +553,11 @@ public class AddListingFragment extends Fragment {
 //        ItemImageUpload itemImageUpload = new ItemImageUpload(downloadUrl,)
 //    }
 
-    private void openHomePage() {
+    private void openHomePage(int itemId) {
 
         Bundle mapArgs = new Bundle();
         mapArgs.putParcelable("latlng", latLng);
+        mapArgs.putInt("itemId", itemId);
         MapFragment mapFragment = new MapFragment();
         mapFragment.setArguments(mapArgs);
         getActivity().getSupportFragmentManager().beginTransaction()

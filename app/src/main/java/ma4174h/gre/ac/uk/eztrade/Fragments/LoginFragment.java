@@ -128,7 +128,6 @@ public class LoginFragment extends Fragment {
                     call.enqueue(new Callback<LoginResponse>() {
                         @Override
                         public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-//                            LoginResponse message = response.body();
 
                             if (response.body().getMessage().equalsIgnoreCase("success")) {
                                 Toast.makeText(getActivity(), "Logged in Successfully", Toast.LENGTH_SHORT).show();

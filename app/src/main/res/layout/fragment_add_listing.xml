@@ -16,14 +16,15 @@
     tools:context=".Fragments.AddListingFragment">
 
 
-
-
     <HorizontalScrollView
         android:id="@+id/imagesLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
@@ -34,40 +35,40 @@
 
             <ImageView
                 android:id="@+id/image_view1"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
+                android:layout_width="130dp"
+                android:layout_height="140dp"
                 android:layout_marginRight="10dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/add_image_icon"></ImageView>
 
             <ImageView
                 android:id="@+id/image_view2"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
+                android:layout_width="130dp"
+                android:layout_height="140dp"
                 android:layout_marginRight="10dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/add_image_icon"></ImageView>
 
             <ImageView
                 android:id="@+id/image_view3"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
+                android:layout_width="130dp"
+                android:layout_height="140dp"
                 android:layout_marginRight="10dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/add_image_icon"></ImageView>
 
             <ImageView
                 android:id="@+id/image_view4"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
+                android:layout_width="130dp"
+                android:layout_height="140dp"
                 android:layout_marginRight="10dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/add_image_icon"></ImageView>
 
             <ImageView
                 android:id="@+id/image_view5"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
+                android:layout_width="130dp"
+                android:layout_height="140dp"
                 android:layout_marginRight="10dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/add_image_icon"></ImageView>
