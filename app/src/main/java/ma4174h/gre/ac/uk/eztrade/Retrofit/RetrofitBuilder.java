@@ -13,8 +13,8 @@ public class RetrofitBuilder {
     public static Retrofit getRetrofitInstance(){
         if (retrofit == null) {
              retrofit = new Retrofit.Builder()
-                     //                    .baseUrl("https://eztrade-mohie.herokuapp.com")
-                    .baseUrl("http://192.168.0.10:8080")
+                                         .baseUrl("https://eztrade-mohie.herokuapp.com")
+//                    .baseUrl("http://192.168.0.10:8080")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
 

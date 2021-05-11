@@ -20,6 +20,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ma4174h.gre.ac.uk.eztrade.DTO.ItemLocationsDTO;
@@ -171,27 +172,38 @@ public class MapFragment extends Fragment {
             latLng = new LatLng(item.getLatitude(), item.getLongitude());
             markerOptions.position(latLng);
             markerOptions.title(item.getTitle() + "            £" + item.getPrice().toString());
-            googleMap.addMarker(markerOptions);
-            googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-                @Override
-                public void onInfoWindowClick(Marker marker) {
-                    showItemDetails(item.getItemId());
-                }
-            });
+            int itemId = item.getId();
+            googleMap.addMarker(markerOptions).setTag(item.getId());
+
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
         }
+        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                int itemId = (int) marker.getTag();
+                googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+
+                    @Override
+                    public void onInfoWindowClick(Marker marker) {
+                        showItemDetails(itemId);
+                    }
+                });
+                return false;
+            }
+        });
+
 
     }
 
     private void showItemDetails(int itemId) {
 
-            Bundle mapArgs = new Bundle();
-            mapArgs.putString("searchQuery", searchQuery);
-            mapArgs.putInt("itemId", itemId);
-            ViewItemFragment viewItemFragment = new ViewItemFragment();
-            viewItemFragment.setArguments(mapArgs);
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container_main, viewItemFragment).commit();
+        Bundle mapArgs = new Bundle();
+        mapArgs.putString("searchQuery", searchQuery);
+        mapArgs.putInt("itemId", itemId);
+        ViewItemFragment viewItemFragment = new ViewItemFragment();
+        viewItemFragment.setArguments(mapArgs);
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container_main, viewItemFragment).commit();
 
     }
 
@@ -202,48 +214,53 @@ public class MapFragment extends Fragment {
         if (getArguments() != null) {
             latLng = getArguments().getParcelable("latlng");
             itemId = getArguments().getInt("itemId");
-        }
 
 
-        retrofit = RetrofitBuilder.getRetrofitInstance();
-        retrofitServices = retrofit.create(RetrofitServices.class);
-        MarkerOptions markerOptions = new MarkerOptions();
+            retrofit = RetrofitBuilder.getRetrofitInstance();
+            retrofitServices = retrofit.create(RetrofitServices.class);
+            MarkerOptions markerOptions = new MarkerOptions();
 
-        if (itemId != 0) {
-            Call<ItemResponse> call = retrofitServices.getItem(itemId);
+            if (itemId != 0) {
+                Call<ItemResponse> call = retrofitServices.getItem(itemId);
 
-            call.enqueue(new Callback<ItemResponse>() {
-                @Override
-                public void onResponse(Call<ItemResponse> call, Response<ItemResponse> response) {
+                call.enqueue(new Callback<ItemResponse>() {
+                    @Override
+                    public void onResponse(Call<ItemResponse> call, Response<ItemResponse> response) {
 
-                    if (response.body() != null) {
-                        if (response.body().getMessage().equalsIgnoreCase("success")) {
-                            Double price = response.body().getItem().getPrice();
-                            String title = response.body().getItem().getTitle();
+                        if (response.body() != null) {
+                            if (response.body().getMessage().equalsIgnoreCase("success")) {
+                                Double price = response.body().getItem().getPrice();
+                                String title = response.body().getItem().getTitle();
+                                int itemId = response.body().getItem().getId();
+                                Double latitude = response.body().getItem().getLatitude();
+                                Double longitude = response.body().getItem().getLongitude();
 
-                            markerOptions.title(title + "              £" + price.toString());
-                            markerOptions.position(latLng);
-                            googleMap.addMarker(markerOptions);
-                        } else if (response.body().getMessage().equalsIgnoreCase("failed")) {
+                                List<ItemLocationsDTO> itemLocationsDTOList = new ArrayList<>();
+                                ItemLocationsDTO itemLocationsDTO = new ItemLocationsDTO(itemId,latitude,longitude,price,title);
+                                itemLocationsDTOList.add(itemLocationsDTO);
+                                loadItemsOnMap(itemLocationsDTOList);
+
+                            } else if (response.body().getMessage().equalsIgnoreCase("failed")) {
 
 
+                            }
                         }
                     }
-                }
 
-                @Override
-                public void onFailure(Call<ItemResponse> call, Throwable t) {
-                    t.printStackTrace();
-                    Toast.makeText(getActivity(), "Error, couldn't connect to server, Please Retry.", Toast.LENGTH_LONG).show();
+                    @Override
+                    public void onFailure(Call<ItemResponse> call, Throwable t) {
+                        t.printStackTrace();
+                        Toast.makeText(getActivity(), "Error, couldn't connect to server, Please Retry.", Toast.LENGTH_LONG).show();
 
-                }
-            });
+                    }
+                });
+            }
+
+            //point map view to the recently added item
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14));
+            markerOptions.position(latLng);
+            googleMap.addMarker(markerOptions);
         }
-
-        //point map view to the recently added item
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14));
-        markerOptions.position(latLng);
-        googleMap.addMarker(markerOptions);
     }
 
     private void getAllItems() {
@@ -288,7 +305,6 @@ public class MapFragment extends Fragment {
 //        mapView.onCreate(mapViewBundle);
 //        mapView.getMapAsync(this);
 //    }
-
 
 
 //    @Override

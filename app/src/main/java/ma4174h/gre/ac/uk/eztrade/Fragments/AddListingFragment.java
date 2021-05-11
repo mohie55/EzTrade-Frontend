@@ -4,7 +4,9 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.net.Uri;
@@ -36,6 +38,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
+import com.google.gson.Gson;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -47,6 +50,7 @@ import java.util.List;
 import ma4174h.gre.ac.uk.eztrade.LoadingDialog;
 import ma4174h.gre.ac.uk.eztrade.Models.Item;
 import ma4174h.gre.ac.uk.eztrade.Models.ItemImage;
+import ma4174h.gre.ac.uk.eztrade.Models.User;
 import ma4174h.gre.ac.uk.eztrade.R;
 import ma4174h.gre.ac.uk.eztrade.Responses.ItemImageResponse;
 import ma4174h.gre.ac.uk.eztrade.Responses.ItemResponse;
@@ -63,6 +67,7 @@ import static android.content.ContentValues.TAG;
 public class AddListingFragment extends Fragment {
 
     private static final int REQUEST_CODE_CHOOSE = 1;
+    public static final String SHARED_PREFERENCES = "SharedPreferences";
 //    private static final int RESULT_OK = ;
     Retrofit retrofit;
     RetrofitServices retrofitServices;
@@ -122,11 +127,7 @@ public class AddListingFragment extends Fragment {
     @Override
     public void onSaveInstanceState(@NotNull Bundle outState) {
         super.onSaveInstanceState(outState);
-//        outState.putString("title",title);
-//        outState.putString("description",description);
-//        outState.putString("category",category);
-//        outState.putDouble("price",price);
-//        outState.putSerializable("selectedPhotos",selectedPhotos);
+
     }
 
     @Override
@@ -281,14 +282,14 @@ public class AddListingFragment extends Fragment {
                                             description = descriptionEditTxt.getText().toString().trim();
 
                                             //Get the logged in user
-//                                            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("user", Context.MODE_PRIVATE);
-//                                            Gson gson = new Gson();
-//                                            String json = sharedPreferences.getString("user", "");
-//                                            User user = gson.fromJson(json, User.class);
-//                                            userId = user.getId();
+                                            SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SHARED_PREFERENCES, Context.MODE_PRIVATE);
 
+                                            Gson gson = new Gson();
+                                            String json = sharedPreferences.getString("user", "");
+                                            User user = gson.fromJson(json, User.class);
+                                            userId = user.getId();
                                             // save the item/listing
-                                            Item item = new Item(title, description, category, price, latitude, longitude, 1);
+                                            Item item = new Item(title, description, category, price, latitude, longitude, userId);
                                             saveItem(item);
                                             submitButton.setEnabled(true);
 
@@ -324,8 +325,8 @@ public class AddListingFragment extends Fragment {
         if (category == null || category.isEmpty()) {
             categoryTextView.setError("Please choose a category.");
             return false;
-        } else if (descriptionEditTxt.getText().toString().trim().length() < 1) {
-            descriptionEditTxt.setError("Description minimum 50 characters.");
+        } else if (descriptionEditTxt.getText().toString().trim().length() < 29) {
+            descriptionEditTxt.setError("Description minimum 30 characters.");
             return false;
 
 //        } else if (priceEditTxt.getText().toString().trim().isEmpty() || Double.parseDouble(priceEditTxt.getText().toString().trim()) < 0.01) {
@@ -333,7 +334,7 @@ public class AddListingFragment extends Fragment {
 //            priceEditTxt.setError("Please enter a price.");
 //            return false;
 
-        } else if (titleEditTxt.getText().toString().trim().length() < 1) {
+        } else if (titleEditTxt.getText().toString().trim().length() < 4) {
             titleEditTxt.setError("Title minimum 5 characters");
             return false;
         } else if (selectedPhotos.isEmpty()) {

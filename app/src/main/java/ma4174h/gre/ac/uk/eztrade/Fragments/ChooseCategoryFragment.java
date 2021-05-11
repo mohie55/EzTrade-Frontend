@@ -112,33 +112,42 @@ public class ChooseCategoryFragment extends Fragment {
         listDataParent = new ArrayList<String>();
         listDataChild = new HashMap<String, List<String>>();
         // Adding child data
-        listDataParent.add("Colors");
-        listDataParent.add("Fruits");
-        listDataParent.add("Animals");
+        listDataParent.add("Home & garden");
+        listDataParent.add("Electronics");
+        listDataParent.add("Sports & Leisure");
+        listDataParent.add("Other");
         // Adding child data List one
-        List<String> colors = new ArrayList<String>();
-        colors.add("Red");
-        colors.add("Green");
-        colors.add("Blue");
-        colors.add("Yellow");
-        colors.add("Blue");
+        List<String> HomeProducts = new ArrayList<String>();
+        HomeProducts.add("Bedroom Furniture");
+        HomeProducts.add("Dining and Living Room Furniture");
+        HomeProducts.add("Kitchenware");
+        HomeProducts.add("Garden & Patio");
+        HomeProducts.add("Other Household Goods");
         // Adding child data List two
-        List<String> fruits  = new ArrayList<String>();
-        fruits.add("Apples");
-        fruits.add("Bananas");
-        fruits.add("Apricots");
-        fruits.add("Cherries");
-        fruits.add("Elderberry");
-        fruits.add("Dates");
+        List<String> Electronics  = new ArrayList<String>();
+        Electronics.add("Phones");
+        Electronics.add("Cameras");
+        Electronics.add("Computers");
+        Electronics.add("Gaming");
+        Electronics.add("Drones");
+        Electronics.add("Smart Watches");
+        Electronics.add("Other Electronic Goods");
         // Adding child data List three
-        List<String> animals = new ArrayList<String>();
-        animals.add("Dog");
-        animals.add("Cat");
-        animals.add("Elephant");
-        animals.add("horse");
-        listDataChild.put(listDataParent.get(0), colors); // Header, Child data
-        listDataChild.put(listDataParent.get(1), fruits); // Header, Child data
-        listDataChild.put(listDataParent.get(2), animals); // Header, Child data
+        List<String> sportProducts = new ArrayList<String>();
+        sportProducts.add("Bikes");
+        sportProducts.add("Camping");
+        sportProducts.add("Fishing");
+        sportProducts.add("Gym");
+        sportProducts.add("Ball and racket");
+        sportProducts.add("Other Sport Goods");
+        //Other
+        List<String> otherProducts = new ArrayList<String>();
+        otherProducts.add("Services");
+        otherProducts.add("Other goods");
+        listDataChild.put(listDataParent.get(0), HomeProducts); // Header, Child data
+        listDataChild.put(listDataParent.get(1), Electronics); // Header, Child data
+        listDataChild.put(listDataParent.get(2), sportProducts); // Header, Child data
+        listDataChild.put(listDataParent.get(3), otherProducts); // Header, Child data
         ExpandableListAdapter listAdapter = new ExpandableListAdapter(context, listDataParent, listDataChild);
         expandableListView.setAdapter(listAdapter);
     }

@@ -1,6 +1,8 @@
 package ma4174h.gre.ac.uk.eztrade.Activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import com.google.android.gms.dynamic.IFragmentWrapper;
@@ -22,6 +24,7 @@ import java.util.Map;
 
 import ma4174h.gre.ac.uk.eztrade.Fragments.AddListingFragment;
 import ma4174h.gre.ac.uk.eztrade.Fragments.MapFragment;
+import ma4174h.gre.ac.uk.eztrade.Models.User;
 import ma4174h.gre.ac.uk.eztrade.R;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
@@ -49,6 +52,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         Intent intent = getIntent();
         String message = intent.getStringExtra("message");
+
+
 
 
 

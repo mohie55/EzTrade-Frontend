@@ -2,15 +2,15 @@ package ma4174h.gre.ac.uk.eztrade.DTO;
 
 public class ItemLocationsDTO {
 
-    private int itemId;
+    private int id;
     private Double latitude;
     private Double longitude;
     private Double price;
     private String title;
 
 
-    public ItemLocationsDTO(int itemId, Double latitude, Double longitude, Double price, String title) {
-        this.itemId = itemId;
+    public ItemLocationsDTO(int id, Double latitude, Double longitude, Double price, String title) {
+        this.id = id;
         this.latitude = latitude;
         this.longitude = longitude;
         this.price = price;
@@ -33,12 +33,12 @@ public class ItemLocationsDTO {
         this.title = title;
     }
 
-    public int getItemId() {
-        return itemId;
+    public int getId() {
+        return id;
     }
 
-    public void setItemId(int itemId) {
-        this.itemId = itemId;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Double getLatitude() {

@@ -45,7 +45,7 @@ public class RegisterFragment extends Fragment {
         confirmPasswordEditTxt = root.findViewById(R.id.confirmPasswordEditTxt);
         firstNameEditTxt = root.findViewById(R.id.firstNameEditTxt);
         lastNameEditTxt = root.findViewById(R.id.lastNameEditTxt);
-        phoneNumberEditTxtRegister = root.findViewById(R.id.phoneNumberEditTxtRegister);
+//        phoneNumberEditTxtRegister = root.findViewById(R.id.phoneNumberEditTxtRegister);
 
         registerBtn.setTranslationY(300);
         registerBtn.setAlpha(0);
@@ -73,7 +73,7 @@ public class RegisterFragment extends Fragment {
                 //Validating fields
                 if (!validateEmail(emailEditTxtRegister.getText().toString().trim())) {
                     emailEditTxtRegister.setError("Invalid Email");
-                } else if (passwordEditTxtRegister.getText().toString().length() < 8) {
+                } else if (passwordEditTxtRegister.getText().toString().length() < 7) {
                     passwordEditTxtRegister.setError("Minimum 8 characters");
                 } else if (firstNameEditTxt.getText().toString().trim().equals("")) {
                     firstNameEditTxt.setError("Enter a First Name");

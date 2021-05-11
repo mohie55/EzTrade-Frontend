@@ -4,20 +4,20 @@ import java.util.List;
 
 public class ImageUrlsResponse {
 
-    private List<String> listOfImageUrls;
+    private List<String> imageUrls;
     private String message;
 
     public ImageUrlsResponse(List<String> listOfImageUrls, String message) {
-        this.listOfImageUrls = listOfImageUrls;
+        this.imageUrls = listOfImageUrls;
         this.message = message;
     }
 
     public List<String> getListOfImageUrls() {
-        return listOfImageUrls;
+        return imageUrls;
     }
 
     public void setListOfImageUrls(List<String> listOfImageUrls) {
-        this.listOfImageUrls = listOfImageUrls;
+        this.imageUrls = listOfImageUrls;
     }
 
     public String getMessage() {

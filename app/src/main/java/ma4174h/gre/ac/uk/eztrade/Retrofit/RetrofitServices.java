@@ -8,7 +8,7 @@ import ma4174h.gre.ac.uk.eztrade.Responses.ItemLocationsResponse;
 import ma4174h.gre.ac.uk.eztrade.Responses.ItemResponse;
 import ma4174h.gre.ac.uk.eztrade.Responses.LoginResponse;
 import ma4174h.gre.ac.uk.eztrade.Responses.RegisterResponse;
-import ma4174h.gre.ac.uk.eztrade.Responses.UserContactDetailsResponse;
+import ma4174h.gre.ac.uk.eztrade.Responses.SellerDetailsResponse;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
@@ -48,8 +48,8 @@ public interface RetrofitServices {
     Call<ItemResponse> getItem(@Query("itemId") int itemId);
 
     @GET("/getSellerDetails")
-    Call<UserContactDetailsResponse> getSellerDetails(int userId);
+    Call<SellerDetailsResponse> getSellerDetails(@Query("userId") int userId);
 
     @GET("/getImageUrls")
-    Call<ImageUrlsResponse> getImageUrls(int itemId);
+    Call<ImageUrlsResponse> getImageUrls(@Query("itemId") int itemId);
 }

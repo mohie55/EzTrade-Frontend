@@ -1,15 +1,16 @@
 package ma4174h.gre.ac.uk.eztrade.Fragments;
 
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
 import com.denzcoskun.imageslider.ImageSlider;
 import com.denzcoskun.imageslider.constants.ScaleTypes;
@@ -21,7 +22,7 @@ import java.util.List;
 import ma4174h.gre.ac.uk.eztrade.R;
 import ma4174h.gre.ac.uk.eztrade.Responses.ImageUrlsResponse;
 import ma4174h.gre.ac.uk.eztrade.Responses.ItemResponse;
-import ma4174h.gre.ac.uk.eztrade.Responses.UserContactDetailsResponse;
+import ma4174h.gre.ac.uk.eztrade.Responses.SellerDetailsResponse;
 import ma4174h.gre.ac.uk.eztrade.Retrofit.RetrofitBuilder;
 import ma4174h.gre.ac.uk.eztrade.Retrofit.RetrofitServices;
 import retrofit2.Call;
@@ -29,7 +30,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-class ViewItemFragment extends Fragment {
+
+public class ViewItemFragment extends Fragment {
 
     private Retrofit retrofit;
     private RetrofitServices retrofitServices;
@@ -38,9 +40,9 @@ class ViewItemFragment extends Fragment {
     private String title;
     private String description;
     private int userId;
-    private String sellerEmail;
-    private String sellerFirstName;
-    private int sellerReviews;
+//    private String sellerEmail;
+//    private String sellerFirstName;
+//    private int sellerReviews;
     private int itemId;
     private String searchQuery;
     private List<String> imageDownloadUrls;
@@ -53,11 +55,32 @@ class ViewItemFragment extends Fragment {
     private TextView sellerFirstNameTV;
 
 
-    @Nullable
+    public ViewItemFragment() {
+        // Required empty public constructor
+    }
+
+
+    public static ViewItemFragment newInstance() {
+        ViewItemFragment fragment = new ViewItemFragment();
+
+        return fragment;
+    }
+
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            Bundle args = getArguments();
+            itemId = args.getInt("itemId");
+            searchQuery = args.getString("searchQuery");
+            getImageUrls(itemId);
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_view_item, container, false);
     }
 
@@ -81,7 +104,11 @@ class ViewItemFragment extends Fragment {
 
     }
 
+
     private void getImageUrls(int itemId) {
+
+        retrofit = RetrofitBuilder.getRetrofitInstance();
+        retrofitServices = retrofit.create(RetrofitServices.class);
 
         if (itemId != 0) {
             Call<ImageUrlsResponse> call = retrofitServices.getImageUrls(itemId);
@@ -93,7 +120,9 @@ class ViewItemFragment extends Fragment {
                     if (response.body() != null) {
                         if (response.body().getMessage().equalsIgnoreCase("success")) {
                             imageDownloadUrls = new ArrayList<>();
-                            imageDownloadUrls.addAll(response.body().getListOfImageUrls());
+                            if (response.body().getListOfImageUrls() != null ) {
+                                imageDownloadUrls.addAll(response.body().getListOfImageUrls());
+                            }
                             getItemDetails();
 
                         } else if (response.body().getMessage().equalsIgnoreCase("failed")) {
@@ -115,9 +144,6 @@ class ViewItemFragment extends Fragment {
 
     private void getItemDetails() {
 
-        retrofit = RetrofitBuilder.getRetrofitInstance();
-        retrofitServices = retrofit.create(RetrofitServices.class);
-
         if (itemId != 0) {
             Call<ItemResponse> call = retrofitServices.getItem(itemId);
 
@@ -127,9 +153,9 @@ class ViewItemFragment extends Fragment {
 
                     if (response.body() != null) {
                         if (response.body().getMessage().equalsIgnoreCase("success")) {
-                            Double price = response.body().getItem().getPrice();
-                            String title = response.body().getItem().getTitle();
-                            String description = response.body().getItem().getDescription();
+                             price = response.body().getItem().getPrice();
+                             title = response.body().getItem().getTitle();
+                             description = response.body().getItem().getDescription();
                             int userId = response.body().getItem().getUserId();
                             getSellerDetails(userId);
 
@@ -155,17 +181,17 @@ class ViewItemFragment extends Fragment {
 
     private void getSellerDetails(int userId) {
         if (userId != 0) {
-            Call<UserContactDetailsResponse> call = retrofitServices.getSellerDetails(userId);
+            Call<SellerDetailsResponse> call = retrofitServices.getSellerDetails(userId);
 
-            call.enqueue(new Callback<UserContactDetailsResponse>() {
+            call.enqueue(new Callback<SellerDetailsResponse>() {
                 @Override
-                public void onResponse(Call<UserContactDetailsResponse> call, Response<UserContactDetailsResponse> response) {
+                public void onResponse(Call<SellerDetailsResponse> call, Response<SellerDetailsResponse> response) {
 
                     if (response.body() != null) {
                         if (response.body().getMessage().equalsIgnoreCase("success")) {
-                            sellerFirstName = response.body().getFirstName();
-                            sellerEmail = response.body().getEmail();
-                            sellerReviews = response.body().getReviews();
+                            String sellerFirstName = response.body().getSellerDetails().getFirstName();
+                            String sellerEmail = response.body().getSellerDetails().getEmail();
+                            int sellerReviews = response.body().getSellerDetails().getReviews();
 
                             showItemDetails(title, description, price, sellerFirstName, sellerEmail,sellerReviews);
 
@@ -177,7 +203,7 @@ class ViewItemFragment extends Fragment {
                 }
 
                 @Override
-                public void onFailure(Call<UserContactDetailsResponse> call, Throwable t) {
+                public void onFailure(Call<SellerDetailsResponse> call, Throwable t) {
                     t.printStackTrace();
                     Toast.makeText(getActivity(), "Error, couldn't connect to server, Please Retry.", Toast.LENGTH_LONG).show();
 
@@ -187,18 +213,22 @@ class ViewItemFragment extends Fragment {
     }
 
 
-    private void showItemDetails(String title, String description, Double price, String sellerrFirstName , String sellerEmail, int reviews) {
+    private void showItemDetails(String title, String description, Double price, String sellerFirstName , String sellerEmail, int reviews) {
 
-        List<SlideModel> slideModels = new ArrayList<>();
-        for (String imageUrl : imageDownloadUrls) {
-            slideModels.add(new SlideModel(imageUrl, ScaleTypes.FIT));
+        if (imageDownloadUrls != null && imageDownloadUrls.size() > 0 ) {
+            List<SlideModel> slideModels = new ArrayList<>();
+            for (String imageUrl : imageDownloadUrls) {
+                slideModels.add(new SlideModel(imageUrl, ScaleTypes.CENTER_CROP));
+            }
+            imageSlider.setImageList(slideModels);
         }
-        imageSlider.setImageList(slideModels);
+
         itemPriceTV.setText("£" + price);
         itemTitleTV.setText(title);
         itemDescriptionTV.setText(description);
-        sellerFirstNameTV.setText(sellerFirstName);
-        sellerEmailTV.setText(sellerEmail);
+        sellerFirstNameTV.setText("Seller: " + sellerFirstName);
+        sellerEmailTV.setText("Email: " + sellerEmail);
+
 
     }
 }
